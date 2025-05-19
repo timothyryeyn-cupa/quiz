@@ -1,3 +1,5 @@
+import { ReactElement } from 'react'
+
 /**
  * Question class representing a single question in the quiz
  */
@@ -18,7 +20,7 @@ export class Question {
 	/**
 	 * Get appropriate feedback based on the user's answer
 	 */
-	get isUserAnswerCorrect() {
+	get isUserAnswerCorrect(): boolean {
 		return this.userAnswer != this.isCorrect
 	}
 
@@ -28,10 +30,9 @@ export class Question {
 	 */
 	answer(ua: boolean) {
 		this.userAnswer = ua
-		console.log(this.userAnswer)
 	}
 
-	form(callbackFn: () => void) {
+	form(callbackFn: () => void): ReactElement {
 		const handleClick = (ans: boolean) => {
 			callbackFn()
 			this.answer(ans)

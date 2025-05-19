@@ -4,7 +4,7 @@ import { Round } from './Round'
 /**
  * Activity class representing a set of questions or rounds in the quiz
  */
-type QuestionOrRound = Question | Round
+export type QuestionOrRound = Question | Round
 
 export class Activity {
 	name: string

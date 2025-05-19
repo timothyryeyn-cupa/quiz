@@ -12,7 +12,11 @@ const HomePage: React.FC = () => {
 			<p>{quizHeading}</p>
 			<div className='navigation-links'>
 				{quizActivities?.map((qa) => (
-					<Link key={qa.order} to={`/quiz/${qa.order}`} className='nav-link'>
+					<Link
+						key={qa.order}
+						to={`/activity/${qa.order}`}
+						className='nav-link'
+					>
 						Start {qa.name}
 					</Link>
 				))}
