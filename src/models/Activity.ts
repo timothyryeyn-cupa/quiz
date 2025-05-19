@@ -28,6 +28,25 @@ export class Activity {
 		})
 	}
 
+	get allQuestionsOrRoundsAnswered() {
+		return this.questionsOrRounds.every((qor) => {
+			if (qor instanceof Round) {
+				return qor.allQuestionsAnswered
+			}
+			return qor.userAnswer != null
+		})
+	}
+
+	clearQuestionUserAnswers() {
+		this.questionsOrRounds.forEach((qor) => {
+			if (qor instanceof Round) {
+				qor.clearQuestionUserAnswers()
+				return
+			}
+			qor.clearUserAnswer()
+		})
+	}
+
 	/**
 	 * Get a question or round by its order number
 	 * @param order The order number of the question/round to find

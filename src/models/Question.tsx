@@ -21,32 +21,18 @@ export class Question {
 	 * Get appropriate feedback based on the user's answer
 	 */
 	get isUserAnswerCorrect(): boolean {
-		return this.userAnswer != this.isCorrect
+		return this.userAnswer == this.isCorrect
 	}
 
 	/**
 	 * Record the user's answer to this question
 	 * @param ua The user's boolean answer
 	 */
-	answer(ua: boolean) {
+	setUserAnswer(ua: boolean) {
 		this.userAnswer = ua
 	}
 
-	form(callbackFn: () => void): ReactElement {
-		const handleClick = (ans: boolean) => {
-			callbackFn()
-			this.answer(ans)
-		}
-
-		return (
-			<div className='question-buttons'>
-				<button className='question-button' onClick={() => handleClick(true)}>
-					True
-				</button>
-				<button className='question-button' onClick={() => handleClick(false)}>
-					False
-				</button>
-			</div>
-		)
+	clearUserAnswer() {
+		this.userAnswer = null
 	}
 }

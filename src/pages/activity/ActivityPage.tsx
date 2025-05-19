@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { FormEvent, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import './ActivityPage.css'
 import { useQuiz } from '../../context/QuizContext'
@@ -33,23 +33,22 @@ const ActivityPage: React.FC = () => {
 	}, [isActivityComplete])
 
 	// Handle moving to next question/round
-	const handleNextQuestion = () => {
+	const answerHandler = (ans: boolean) => {
 		if (currentQuestionOrRound instanceof Round) {
+			currentRoundQuestion?.setUserAnswer(ans)
+			if (
+				currentQuestionOrRound.highestQuestionOrder ===
+				currentRoundQuestion?.order
+			) {
+				nextQuestionOrRound()
+				resetRoundQuestions()
+				return
+			}
 			nextRoundQuestion()
 		} else {
+			currentQuestionOrRound.setUserAnswer(ans)
 			nextQuestionOrRound()
 		}
-	}
-
-	// Handle moving to next round
-	const handleNextRound = () => {
-		resetRoundQuestions()
-		nextQuestionOrRound()
-	}
-
-	// Go back to home
-	const navigateToHome = () => {
-		navigate('/')
 	}
 
 	return (
@@ -62,23 +61,17 @@ const ActivityPage: React.FC = () => {
 					<RoundComponent
 						round={currentQuestionOrRound}
 						roundQuestion={currentRoundQuestion}
-						moveToNextRound={handleNextRound}
-						moveToNextRoundQuestion={handleNextQuestion}
+						answerHandler={answerHandler}
 					/>
 				)
 			) : (
 				// If it's a question, render the QuestionComponent
 				<QuestionComponent
-					question={currentQuestionOrRound as Question}
-					answerCb={handleNextQuestion}
+					order={currentQuestionOrRound.order}
+					stimulus={currentQuestionOrRound.stimulus}
+					answerHandler={answerHandler}
 				/>
 			)}
-
-			<div className='navigation'>
-				<button onClick={navigateToHome} className='nav-button'>
-					Back to Home
-				</button>
-			</div>
 		</div>
 	)
 }
@@ -86,14 +79,25 @@ const ActivityPage: React.FC = () => {
 export default ActivityPage
 
 const QuestionComponent: React.FC<{
-	question: Question
-	answerCb: () => void
-}> = ({ question, answerCb }) => {
+	order: number
+	stimulus: string
+	answerHandler: (ans: boolean) => void
+}> = ({ order, stimulus, answerHandler }) => {
 	return (
 		<div>
-			<div>Q{question.order}</div>
-			<div>{question.stimulus}</div>
-			<div>{question.form(answerCb)}</div>
+			<div>{`Q${order}. ${stimulus}`}</div>
+			<div>
+				<button className='question-button' onClick={() => answerHandler(true)}>
+					True
+				</button>
+				<button
+					className='question-button'
+					value='false'
+					onClick={() => answerHandler(true)}
+				>
+					False
+				</button>
+			</div>
 		</div>
 	)
 }
@@ -101,24 +105,16 @@ const QuestionComponent: React.FC<{
 const RoundComponent: React.FC<{
 	round: Round
 	roundQuestion: Question
-	moveToNextRound: () => void
-	moveToNextRoundQuestion: () => void
-}> = ({ round, roundQuestion, moveToNextRound, moveToNextRoundQuestion }) => {
-	const moveToNextInOrder = () => {
-		if (round.highestQuestionOrder === roundQuestion.order) {
-			moveToNextRound()
-		}
-		moveToNextRoundQuestion()
-	}
-	console.log('round')
-
+	answerHandler: (ans: boolean) => void
+}> = ({ round, roundQuestion, answerHandler }) => {
 	return (
 		<div>
 			{round.roundTitle}
 			<div>
 				<QuestionComponent
-					question={roundQuestion}
-					answerCb={moveToNextInOrder}
+					order={roundQuestion.order}
+					stimulus={roundQuestion.stimulus}
+					answerHandler={answerHandler}
 				></QuestionComponent>
 			</div>
 		</div>

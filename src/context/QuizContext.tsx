@@ -5,7 +5,7 @@ import {
 	useReducer,
 	useMemo,
 	useCallback,
-	useEffect
+	useState
 } from 'react'
 import { loadQuiz } from '../services/quizService'
 import { Activity, Question, QuestionOrRound, Round } from '../models'
@@ -20,20 +20,15 @@ type QuizState = {
 
 type QuizAction =
 	| { type: 'SET_ACTIVITY_ORDER'; order: number }
-	| { type: 'SET_QUESTION_OR_ROUND_ORDER'; order: number }
-	| { type: 'SET_ROUND_QUESTION_ORDER'; order: number }
 	| { type: 'NEXT_QUESTION_OR_ROUND'; activity: Activity }
 	| { type: 'NEXT_ROUND_QUESTION'; round: Round }
+	| { type: 'RESET_QUIZ' }
 	| { type: 'RESET_ROUND_QUESTIONS' }
 
 function quizReducer(state: QuizState, action: QuizAction): QuizState {
 	switch (action.type) {
 		case 'SET_ACTIVITY_ORDER':
 			return { ...state, currentActivityOrder: action.order }
-		case 'SET_QUESTION_OR_ROUND_ORDER':
-			return { ...state, currentQuestionOrRoundOrder: action.order }
-		case 'SET_ROUND_QUESTION_ORDER':
-			return { ...state, currentRoundQuestionOrder: action.order }
 		case 'NEXT_QUESTION_OR_ROUND':
 			return {
 				...state,
@@ -51,6 +46,12 @@ function quizReducer(state: QuizState, action: QuizAction): QuizState {
 						? 1
 						: state.currentRoundQuestionOrder + 1
 			}
+		case 'RESET_QUIZ':
+			return {
+				currentActivityOrder: 1,
+				currentQuestionOrRoundOrder: 1,
+				currentRoundQuestionOrder: 1
+			}
 		case 'RESET_ROUND_QUESTIONS':
 			return { ...state, currentRoundQuestionOrder: 1 }
 		default:
@@ -59,6 +60,8 @@ function quizReducer(state: QuizState, action: QuizAction): QuizState {
 }
 
 type QuizContextType = {
+	isLoading: boolean
+
 	// Quiz data
 	quizName: string
 	quizHeading: string
@@ -75,22 +78,25 @@ type QuizContextType = {
 	nextQuestionOrRound: () => void
 	nextRoundQuestion: () => void
 	resetRoundQuestions: () => void
+	resetQuiz: () => void
 }
 
 const QuizContext = createContext<QuizContextType | undefined>(undefined)
 
 export const QuizProvider = ({ children }: { children: ReactNode }) => {
+	const [isLoading, setIsLoading] = useState(true)
+
 	const [state, dispatch] = useReducer(quizReducer, {
 		currentActivityOrder: 1,
 		currentQuestionOrRoundOrder: 1,
 		currentRoundQuestionOrder: 1
 	})
 
+	// Computed Activity, QuestionOrRound and RoundQuestion based on their order in state
 	const currentActivity = useMemo(
 		() => quiz.getActivityByOrder(state.currentActivityOrder),
 		[state.currentActivityOrder]
 	)
-
 	const currentQuestionOrRound = useMemo(
 		() =>
 			currentActivity.getQuestionOrRoundByOrder(
@@ -98,7 +104,6 @@ export const QuizProvider = ({ children }: { children: ReactNode }) => {
 			),
 		[currentActivity, state.currentQuestionOrRoundOrder]
 	)
-
 	const currentRoundQuestion = useMemo(() => {
 		if (currentQuestionOrRound instanceof Round) {
 			return currentQuestionOrRound.getQuestionByOrder(
@@ -108,29 +113,9 @@ export const QuizProvider = ({ children }: { children: ReactNode }) => {
 		return null
 	}, [currentQuestionOrRound, state.currentRoundQuestionOrder])
 
-	// Add this after the currentRoundQuestion useMemo
-
 	const isActivityComplete = useMemo(() => {
-		// Check if we're at the last question/round of the current activity
-		const isLastQuestionOrRound =
-			state.currentQuestionOrRoundOrder ===
-			currentActivity.highestQuestionOrRoundOrder
-
-		// If we're looking at a round, also check if it's the last question in the round
-		if (currentQuestionOrRound instanceof Round) {
-			const isLastRoundQuestion =
-				state.currentRoundQuestionOrder ===
-				currentQuestionOrRound.highestQuestionOrder
-			return isLastQuestionOrRound && isLastRoundQuestion
-		}
-
-		return isLastQuestionOrRound
-	}, [
-		state.currentQuestionOrRoundOrder,
-		state.currentRoundQuestionOrder,
-		currentActivity,
-		currentQuestionOrRound
-	])
+		return currentActivity.allQuestionsOrRoundsAnswered
+	}, [state])
 
 	// Action creators
 	const setActivityOrder = useCallback((order: number) => {
@@ -151,8 +136,15 @@ export const QuizProvider = ({ children }: { children: ReactNode }) => {
 		dispatch({ type: 'RESET_ROUND_QUESTIONS' })
 	}, [])
 
+	const resetQuiz = useCallback(() => {
+		currentActivity.clearQuestionUserAnswers()
+		dispatch({ type: 'RESET_QUIZ' })
+	}, [])
+
 	const contextValue = useMemo(
 		() => ({
+			isLoading,
+
 			// Quiz data
 			quizName: quiz.name,
 			quizHeading: quiz.heading,
@@ -168,17 +160,14 @@ export const QuizProvider = ({ children }: { children: ReactNode }) => {
 			setActivityOrder,
 			nextQuestionOrRound,
 			nextRoundQuestion,
-			resetRoundQuestions
+			resetRoundQuestions,
+			resetQuiz
 		}),
 		[
 			currentActivity,
 			currentQuestionOrRound,
 			currentRoundQuestion,
-			isActivityComplete,
-			setActivityOrder,
-			nextQuestionOrRound,
-			nextRoundQuestion,
-			resetRoundQuestions
+			isActivityComplete
 		]
 	)
 

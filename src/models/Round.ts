@@ -23,6 +23,14 @@ export class Round {
 		})
 	}
 
+	get allQuestionsAnswered(): boolean {
+		return this.questions.every((q) => q.userAnswer != null)
+	}
+
+	clearQuestionUserAnswers() {
+		this.questions.forEach((q) => q.clearUserAnswer())
+	}
+
 	/**
 	 * Get a question by its order number within this round
 	 * @param order The order number of the question to find

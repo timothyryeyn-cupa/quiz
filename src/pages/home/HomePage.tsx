@@ -2,9 +2,12 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import './HomePage.css'
 import { useQuiz } from '../../context/QuizContext'
+import LoadingSpinner from '../../components/loading spinner/LoadingSpinner'
 
 const HomePage: React.FC = () => {
-	const { quizName, quizHeading, quizActivities } = useQuiz()
+	const { quizName, quizHeading, quizActivities, resetQuiz, isLoading } =
+		useQuiz()
+	resetQuiz()
 
 	return (
 		<div className='homepage-container'>
