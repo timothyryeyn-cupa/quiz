@@ -2,8 +2,8 @@ import axios from 'axios'
 import { Quiz } from '../models'
 
 // The API URL to fetch quiz data from
-const API_URL =
-	'https://s3.eu-west-2.amazonaws.com/interview.mock.data/payload.json'
+const API_URL = import.meta.env.VITE_API_URL
+const USE_MOCK_DATA = import.meta.env.VITE_USE_MOCK_DATA === 'true'
 
 const DATA = {
 	name: 'Error Find',
@@ -115,11 +115,17 @@ const DATA = {
  */
 export async function loadQuiz(): Promise<Quiz> {
 	try {
-		// For production, uncomment this to fetch from the actual API:
-		// const response = await axios.get(API_URL)
-		// return new Quiz(response.data)
+		// In production, use the actual API
+		if (!USE_MOCK_DATA) {
+			const response = await axios.get(API_URL, {
+				headers: {
+					'Access-Control-Allow-Origin': '*'
+				}
+			})
+			return new Quiz(response.data)
+		}
 
-		// Currently using hardcoded data for development
+		// In development, use hardcoded data
 		return new Quiz(DATA)
 	} catch (error) {
 		console.error('Error loading quiz:', error)
