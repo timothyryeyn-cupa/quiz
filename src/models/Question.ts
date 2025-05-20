@@ -1,5 +1,3 @@
-import { ReactElement } from 'react'
-
 /**
  * Question class representing a single question in the quiz
  */

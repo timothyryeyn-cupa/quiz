@@ -1,13 +1,12 @@
 import React from 'react'
 import { BrowserRouter } from 'react-router-dom'
 import AppRoutes from './routes/AppRoutes'
-import './App.css'
-import { QuizProvider } from './context/QuizContext'
+import { QuizProvider } from './contexts/QuizContext'
 
 function App() {
 	return (
 		<BrowserRouter>
-			<div className='app-container'>
+			<div className=''>
 				<QuizProvider>
 					<AppRoutes />
 				</QuizProvider>

@@ -20,8 +20,8 @@ type QuizState = {
 
 type QuizAction =
 	| { type: 'SET_ACTIVITY_ORDER'; order: number }
-	| { type: 'NEXT_QUESTION_OR_ROUND'; activity: Activity }
-	| { type: 'NEXT_ROUND_QUESTION'; round: Round }
+	| { type: 'NEXT_QUESTION_OR_ROUND'; highestQuestionOrRoundOrder: number }
+	| { type: 'NEXT_ROUND_QUESTION'; highestRoundQuestionOrder: number }
 	| { type: 'RESET_QUIZ' }
 	| { type: 'RESET_ROUND_QUESTIONS' }
 
@@ -34,7 +34,7 @@ function quizReducer(state: QuizState, action: QuizAction): QuizState {
 				...state,
 				currentQuestionOrRoundOrder:
 					state.currentQuestionOrRoundOrder ===
-					action.activity.highestQuestionOrRoundOrder
+					action.highestQuestionOrRoundOrder
 						? 1
 						: state.currentQuestionOrRoundOrder + 1
 			}
@@ -42,7 +42,7 @@ function quizReducer(state: QuizState, action: QuizAction): QuizState {
 			return {
 				...state,
 				currentRoundQuestionOrder:
-					state.currentRoundQuestionOrder === action.round.highestQuestionOrder
+					state.currentRoundQuestionOrder === action.highestRoundQuestionOrder
 						? 1
 						: state.currentRoundQuestionOrder + 1
 			}
@@ -84,7 +84,7 @@ type QuizContextType = {
 const QuizContext = createContext<QuizContextType | undefined>(undefined)
 
 export const QuizProvider = ({ children }: { children: ReactNode }) => {
-	const [isLoading, setIsLoading] = useState(true)
+	const [isLoading, setIsLoading] = useState(false)
 
 	const [state, dispatch] = useReducer(quizReducer, {
 		currentActivityOrder: 1,
@@ -123,12 +123,18 @@ export const QuizProvider = ({ children }: { children: ReactNode }) => {
 	}, [])
 
 	const nextQuestionOrRound = useCallback(() => {
-		dispatch({ type: 'NEXT_QUESTION_OR_ROUND', activity: currentActivity })
+		dispatch({
+			type: 'NEXT_QUESTION_OR_ROUND',
+			highestQuestionOrRoundOrder: currentActivity.highestQuestionOrRoundOrder
+		})
 	}, [currentActivity])
 
 	const nextRoundQuestion = useCallback(() => {
 		if (currentQuestionOrRound instanceof Round) {
-			dispatch({ type: 'NEXT_ROUND_QUESTION', round: currentQuestionOrRound })
+			dispatch({
+				type: 'NEXT_ROUND_QUESTION',
+				highestRoundQuestionOrder: currentQuestionOrRound.highestQuestionOrder
+			})
 		}
 	}, [currentQuestionOrRound])
 
@@ -137,7 +143,7 @@ export const QuizProvider = ({ children }: { children: ReactNode }) => {
 	}, [])
 
 	const resetQuiz = useCallback(() => {
-		currentActivity.clearQuestionUserAnswers()
+		quiz.activities.forEach((a) => a.clearQuestionUserAnswers())
 		dispatch({ type: 'RESET_QUIZ' })
 	}, [])
 
