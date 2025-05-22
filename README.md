@@ -88,10 +88,16 @@ src/
 ├── contexts/          # React contexts including QuizContext
 ├── models/            # Data models (Quiz, Activity, Question, Round)
 ├── pages/             # Page components for routing
-│   ├── ActivityPage.tsx     # Page for displaying quiz questions
-│   ├── HomePage.tsx         # Landing page
-│   └── ResultsPage.tsx      # Shows quiz results
+│   ├── activity/      # Activity-related components
+│   │   ├── ActivityPage.tsx       # Page for displaying quiz questions
+│   │   └── QuestionComponent.tsx  # Component for rendering questions
+│   ├── home/          # Home page components
+│   │   └── HomePage.tsx           # Landing page
+│   └── results/       # Results-related components
+│       ├── ResultsPage.tsx        # Shows quiz results
+│       └── QuestionResultComponent.tsx # Component for rendering question results
 ├── routes/            # Routing configuration
+│   └── AppRoutes.tsx  # Main routing configuration
 ├── services/          # API and data services
 │   └── quizService.ts # Service for loading quiz data
 ├── App.tsx            # Main application component
@@ -111,24 +117,28 @@ Key hooks and state functions:
 - `useQuiz()` - Access quiz context in components
 - `setActivityOrder()` - Navigate to a specific activity
 - `nextQuestionOrRound()` - Move to the next question or round
-- `resetQuiz()` - Reset the quiz to its initial state
+- `nextRoundQuestion()` - Move to the next question within a round
+- `resetRoundQuestions()` - Reset the current round to the first question
+- `resetAnswers()` - Reset all answers in the quiz
+- `answerCurrentQuestion()` - Record an answer for the current question
 
 ## Routing
 
 The application uses React Router v7 with the following routes:
 
 - `/` - Home page
-- `/activity/:order` - Activity page showing questions (with dynamic parameter)
+- `/activity/:activityOrder` - Activity page showing questions (with dynamic parameter)
 - `/results` - Results page after completing activities
 
 ## Models
 
 The app is structured around object-oriented models:
 
-- `Quiz` - Top-level container for all activities
-- `Activity` - Contains questions or rounds
-- `Question` - Individual question with stimulus and answer
-- `Round` - Group of related questions
+- `Quiz` - Top-level container for all activities with methods to retrieve activities by order
+- `Activity` - Contains questions or rounds (as `QuestionOrRound` type)
+- `Question` - Individual question with stimulus, feedback, and correct answer
+- `Round` - Group of related questions with its own title
+- `QuizSession` - Manages the state of a quiz attempt including user answers
 
 ## Customizing Quizzes
 
@@ -157,7 +167,26 @@ The quiz structure follows this format:
         // More questions...
       ]
     },
-    // More activities...
+    // For activities with rounds:
+    {
+      activity_name: "Activity with Rounds",
+      order: 2,
+      questions: [
+        {
+          round_title: "Round Name",
+          order: 1,
+          questions: [
+            {
+              is_correct: false,
+              stimulus: "Question text with *highlighted error*",
+              order: 1,
+              feedback: "Corrected text with *correct solution*"
+            },
+            // More round questions...
+          ]
+        }
+      ]
+    }
   ]
 }
 ```

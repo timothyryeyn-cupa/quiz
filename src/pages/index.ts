@@ -1,5 +1,5 @@
-import HomePage from './HomePage'
-import ActivityPage from './ActivityPage'
-import ResultsPage from './ResultsPage'
+import HomePage from './home/HomePage'
+import ActivityPage from './activity/ActivityPage'
+import ResultsPage from './results/ResultsPage'
 
 export { HomePage, ActivityPage, ResultsPage }
