@@ -16,7 +16,7 @@ import {
 	Round
 } from '../models'
 import { ActivityResults } from '../models/QuizSession'
-import { quizReducer } from './QuizReducer'
+import { quizReducer, RESET_ORDER } from './QuizReducer'
 
 type QuizContextType = {
 	isLoading: boolean
@@ -37,7 +37,7 @@ type QuizContextType = {
 	nextQuestionOrRound: () => void
 	nextRoundQuestion: () => void
 	resetRoundQuestions: () => void
-	resetAnswers: () => void
+	resetQuizSession: () => void
 	answerCurrentQuestion: (answer: boolean) => void
 }
 
@@ -47,9 +47,9 @@ export const QuizProvider = ({ children }: { children: ReactNode }) => {
 	const [isLoading, setIsLoading] = useState(true)
 	const [state, dispatch] = useReducer(quizReducer, {
 		quizSession: null as any,
-		currentActivityOrder: 0,
-		currentQuestionOrRoundOrder: 0,
-		currentRoundQuestionOrder: 0
+		currentActivityOrder: RESET_ORDER,
+		currentQuestionOrRoundOrder: RESET_ORDER,
+		currentRoundQuestionOrder: RESET_ORDER
 	})
 
 	useEffect(() => {
@@ -68,17 +68,13 @@ export const QuizProvider = ({ children }: { children: ReactNode }) => {
 	}, [])
 
 	const currentActivity = useMemo(() => {
-		if (!state.quizSession?.quiz) {
-			return
-		}
-		return state.quizSession.quiz.getActivityByOrder(state.currentActivityOrder)
+		return state.quizSession?.quiz.getActivityByOrder(
+			state.currentActivityOrder
+		)
 	}, [state.quizSession, state.currentActivityOrder])
 
 	const currentQuestionOrRound = useMemo(() => {
-		if (!currentActivity) {
-			return
-		}
-		return currentActivity.getQuestionOrRoundByOrder(
+		return currentActivity?.getQuestionOrRoundByOrder(
 			state.currentQuestionOrRoundOrder
 		)
 	}, [currentActivity, state.currentQuestionOrRoundOrder])
@@ -123,7 +119,7 @@ export const QuizProvider = ({ children }: { children: ReactNode }) => {
 			nextQuestionOrRound: () => dispatch({ type: 'NEXT_QUESTION_OR_ROUND' }),
 			nextRoundQuestion: () => dispatch({ type: 'NEXT_ROUND_QUESTION' }),
 			resetRoundQuestions: () => dispatch({ type: 'RESET_ROUND_QUESTIONS' }),
-			resetAnswers: () => dispatch({ type: 'RESET_ANSWERS' }),
+			resetQuizSession: () => dispatch({ type: 'RESET_QUIZ_SESSION' }),
 			answerCurrentQuestion: (answer) =>
 				dispatch({ type: 'ANSWER_QUESTION', answer })
 		}

@@ -22,7 +22,6 @@ const ActivityPage: React.FC = () => {
 	} = useQuiz()
 
 	useEffect(() => {
-		console.log(activityOrder)
 		if (activityOrder) {
 			setActivityOrder(Number(activityOrder))
 		}

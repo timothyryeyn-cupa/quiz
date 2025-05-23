@@ -32,13 +32,13 @@ const QuestionComponent: React.FC<{
 			</div>
 			<div className='flex gap-4 justify-center mt-4'>
 				<button
-					className='py-3 px-8 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg flex-1'
+					className='cursor-pointer py-3 px-8 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg flex-1'
 					onClick={() => answerHandler(true)}
 				>
 					True
 				</button>
 				<button
-					className='py-3 px-8 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg flex-1'
+					className='cursor-pointer py-3 px-8 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg flex-1'
 					onClick={() => answerHandler(false)}
 				>
 					False

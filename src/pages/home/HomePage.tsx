@@ -4,11 +4,11 @@ import { useQuiz } from '../../contexts/QuizContext'
 import Loading from '../../components/Loading'
 
 const HomePage: React.FC = () => {
-	const { quizDetails, isLoading, resetAnswers } = useQuiz()
+	const { quizDetails, isLoading, resetQuizSession } = useQuiz()
 
 	useEffect(() => {
 		if (!isLoading) {
-			resetAnswers()
+			resetQuizSession()
 		}
 	}, [])
 
