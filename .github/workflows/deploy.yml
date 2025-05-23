@@ -8,6 +8,7 @@ on:
 jobs:
   build:
     name: Build
+    environment: master
     runs-on: ubuntu-latest
 
     steps:
@@ -23,8 +24,8 @@ jobs:
       - name: Build project
         run: npm run build
         env:
-          VITE_API_URL: https://s3.eu-west-2.amazonaws.com/interview.mock.data/payload.json
-          VITE_USE_MOCK_DATA: true
+          VITE_API_URL: ${{ env.VITE_API_URL }}
+          VITE_USE_MOCK_DATA: ${{ env.VITE_USE_MOCK_DATA }}
 
       - name: Upload production-ready build files
         uses: actions/upload-artifact@v4

@@ -23,8 +23,10 @@ const ErrorFallback = ({
 }
 
 function App() {
+	const baseUrl = import.meta.env.BASE_URL
+
 	return (
-		<BrowserRouter>
+		<BrowserRouter basename={baseUrl}>
 			<div className=''>
 				<ErrorBoundary FallbackComponent={ErrorFallback}>
 					<Suspense fallback={<Loading></Loading>}>
