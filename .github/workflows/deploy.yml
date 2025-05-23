@@ -17,6 +17,12 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
 
+      - name: Print all environment variables
+        env:
+          VITE_API_URL: ${{ env.VITE_API_URL }}
+          VITE_USE_MOCK_DATA: ${{ env.VITE_USE_MOCK_DATA }}
+        run: printenv
+
       - name: Install dependencies
         uses: bahmutov/npm-install@v1
 
