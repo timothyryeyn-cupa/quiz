@@ -123,7 +123,7 @@ The `QuizSession` class acts as the bridge between the UI state and the quiz dat
 | `nextQuestionOrRound`   | none              | `void` | Advances to next question or round         |
 | `nextRoundQuestion`     | none              | `void` | Advances to next question in current round |
 | `resetRoundQuestions`   | none              | `void` | Resets to first question in current round  |
-| `resetAnswers`          | none              | `void` | Resets all answers and navigation state    |
+| `resetQuizSession`      | none              | `void` | Resets all answers and navigation state    |
 | `answerCurrentQuestion` | `answer: boolean` | `void` | Records answer for current question        |
 
 ## Using with TypeScript
@@ -147,7 +147,7 @@ type QuizContextType = {
 	nextQuestionOrRound: () => void
 	nextRoundQuestion: () => void
 	resetRoundQuestions: () => void
-	resetAnswers: () => void
+	resetQuizSession: () => void
 	answerCurrentQuestion: (answer: boolean) => void
 }
 ```
@@ -167,11 +167,13 @@ type QuizContextType = {
 2. Handle the action in the reducer function:
 
    ```typescript
-   case 'NEW_ACTION':
+   case 'NEW_ACTION': {
+     // Implement proper immutability pattern
      return {
        ...state,
        // Update state properties based on action
      }
+   }
    ```
 
 3. Add a dispatcher function to the context value:
