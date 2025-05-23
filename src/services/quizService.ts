@@ -5,6 +5,8 @@ import { Quiz } from '../models'
 const API_URL = import.meta.env.VITE_API_URL
 const USE_MOCK_DATA = import.meta.env.VITE_USE_MOCK_DATA === 'true'
 
+console.log(import.meta.env)
+
 console.log({ API_URL, USE_MOCK_DATA })
 
 const DATA = {
