@@ -5,9 +5,7 @@ import { Quiz } from '../models'
 const API_URL = import.meta.env.VITE_API_URL
 const USE_MOCK_DATA = import.meta.env.VITE_USE_MOCK_DATA === 'true'
 
-console.log(import.meta.env)
-
-console.log({ API_URL, USE_MOCK_DATA })
+console.table(import.meta.env)
 
 const DATA = {
 	name: 'Error Find',
@@ -121,11 +119,7 @@ export async function loadQuiz(): Promise<Quiz> {
 	try {
 		// In production, use the actual API
 		if (!USE_MOCK_DATA) {
-			const response = await axios.get(API_URL, {
-				headers: {
-					'Access-Control-Allow-Origin': '*'
-				}
-			})
+			const response = await axios.get(`${API_URL}/quiz`)
 			return new Quiz(response.data)
 		}
 
