@@ -23,8 +23,8 @@ jobs:
       - name: Build project
         run: npm run build
         env:
-          VITE_API_URL: ${{ secrets.VITE_API_URL }}
-          VITE_USE_MOCK_DATA: ${{ secrets.VITE_USE_MOCK_DATA }}
+          VITE_API_URL: ${{ vars.VITE_API_URL }}
+          VITE_USE_MOCK_DATA: ${{ vars.VITE_USE_MOCK_DATA }}
 
       - name: Upload production-ready build files
         uses: actions/upload-artifact@v4
