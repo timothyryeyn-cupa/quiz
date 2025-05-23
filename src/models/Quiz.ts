@@ -25,7 +25,7 @@ export class Quiz {
 			this.activities.push(new Activity(a))
 		}
 	}
-	
+
 	/**
 	 * Gets the highest activity order number in this quiz
 	 * @returns The highest activity order or 0 if the quiz has no activities

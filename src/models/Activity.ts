@@ -1,7 +1,7 @@
 import { Question } from './Question'
 import { Round } from './Round'
 
-/** 
+/**
  * Union type representing either a Question or a Round
  */
 export type QuestionOrRound = Question | Round

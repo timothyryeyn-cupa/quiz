@@ -36,6 +36,7 @@ The models directory contains the core domain models that represent the quiz str
 The most basic unit of content. Represents a single question with its correct answer.
 
 **Properties**:
+
 - `stimulus`: The question text
 - `feedback`: Feedback text shown after answering
 - `order`: Position within parent (activity or round)
@@ -46,11 +47,13 @@ The most basic unit of content. Represents a single question with its correct an
 A grouping mechanism for related questions.
 
 **Properties**:
+
 - `title`: The round title
 - `order`: Position within parent activity
 - `questions`: Array of Question objects
 
 **Methods**:
+
 - `highestQuestionOrder`: Returns highest question order number
 - `getQuestionByOrder`: Retrieves a question by its order number
 
@@ -59,11 +62,13 @@ A grouping mechanism for related questions.
 A major section of the quiz containing questions and/or rounds.
 
 **Properties**:
+
 - `name`: Activity name/title
 - `order`: Position within the quiz
 - `questionsOrRounds`: Array of Question or Round objects
 
 **Methods**:
+
 - `highestQuestionOrRoundOrder`: Returns highest question/round order
 - `getQuestionOrRoundByOrder`: Retrieves a question or round by order
 
@@ -72,11 +77,13 @@ A major section of the quiz containing questions and/or rounds.
 The top-level container for all quiz content.
 
 **Properties**:
+
 - `name`: Quiz name/identifier
 - `heading`: Quiz heading/title
 - `activities`: Array of Activity objects
 
 **Methods**:
+
 - `highestActivityOrder`: Returns highest activity order
 - `getActivityByOrder`: Retrieves an activity by order number
 
@@ -85,10 +92,12 @@ The top-level container for all quiz content.
 Manages a user's interaction with a quiz, tracking answers and results.
 
 **Properties**:
+
 - `quiz`: Reference to Quiz object
 - `answers`: Map of answers keyed by question IDs
 
 **Methods**:
+
 - `answerQuestion`: Records user's answer for a question
 - `resetAnswers`: Clears all answers
 - `getQuestionAnswer`: Retrieves user's answer for a question
@@ -101,6 +110,7 @@ Manages a user's interaction with a quiz, tracking answers and results.
 ### Question Identification
 
 Questions are uniquely identified by their position in the hierarchy:
+
 - Direct questions: `${activityOrder}-${questionOrder}`
 - Round questions: `${activityOrder}-${roundOrder}-${questionOrder}`
 
@@ -109,9 +119,9 @@ Questions are uniquely identified by their position in the hierarchy:
 Activity results are structured as:
 
 ```typescript
-type QuestionResult = { questionOrder: number; correctAnswer: boolean };
-type RoundResult = { roundOrder: number; results: QuestionResult[] };
-type ActivityResults = (RoundResult | QuestionResult)[];
+type QuestionResult = { questionOrder: number; correctAnswer: boolean }
+type RoundResult = { roundOrder: number; results: QuestionResult[] }
+type ActivityResults = (RoundResult | QuestionResult)[]
 ```
 
 ## Integration with Context System
