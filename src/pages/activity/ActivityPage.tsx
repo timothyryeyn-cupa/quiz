@@ -25,7 +25,7 @@ const ActivityPage: React.FC = () => {
 		if (activityOrder) {
 			setActivityOrder(Number(activityOrder))
 		}
-	}, [])
+	}, [currentActivity])
 
 	useEffect(() => {
 		if (isCurrentActivityComplete) {
@@ -63,9 +63,24 @@ const ActivityPage: React.FC = () => {
 			nextQuestionOrRound()
 		}
 	}
-
 	if (!currentActivity) {
-		return <div>Activity does not exist</div>
+		return (
+			<div className='min-h-screen bg-gradient-to-br justify-center from-blue-50 to-indigo-100 p-6 flex flex-col items-center'>
+				<div className='w-full max-w-2xl bg-white rounded-xl shadow-lg p-8 transition-all text-center'>
+					<svg className="w-16 h-16 text-indigo-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+						<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+					</svg>
+					<h2 className='text-2xl font-bold text-indigo-700 mb-3'>Activity Not Found</h2>
+					<p className='text-gray-600 mb-6'>The requested activity does not exist or could not be loaded.</p>
+					<button 
+						onClick={() => navigate('/')} 
+						className='bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-6 rounded-lg transition-colors'
+					>
+						Return to Home
+					</button>
+				</div>
+			</div>
+		)
 	}
 
 	return (
